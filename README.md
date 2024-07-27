@@ -22,8 +22,63 @@ This project demonstrates how to deploy and run a chat application using Python,
     ```sh
     pip install -r requirements.txt
     ```
-4. Deploy the app to Azure:
-    - Provide detailed deployment steps.
+
+## Infrastructure as Code (IaC)
+1. Set up Terraform:
+    - Install Terraform: [Terraform Install Guide](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+    - Initialize Terraform:
+        ```sh
+        terraform init
+        ```
+    - Apply Terraform configuration:
+        ```sh
+        terraform apply
+        ```
+    - Follow prompts to confirm deployment.
+
+## CI/CD Pipeline
+1. Set up GitHub Actions for CI/CD:
+    - Create a `.github/workflows` directory in the repository.
+    - Add a workflow file for CI/CD (e.g., `deploy.yml`):
+    ```yaml
+    name: CI/CD Pipeline
+
+    on:
+      push:
+        branches:
+          - main
+
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v2
+
+          - name: Set up Python
+            uses: actions/setup-python@v2
+            with:
+              python-version: 3.8
+
+          - name: Install dependencies
+            run: |
+              python -m pip install --upgrade pip
+              pip install -r requirements.txt
+
+          - name: Run tests
+            run: |
+              pytest
+
+          - name: Deploy to Azure
+            env:
+              AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+              AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+              AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+              AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+            run: |
+              terraform init
+              terraform apply -auto-approve
+    ```
 
 ## Usage
 - How to use the chat application to get answers about employee benefits.
